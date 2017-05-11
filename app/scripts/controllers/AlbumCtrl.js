@@ -1,5 +1,5 @@
 (function() {
-     function AlbumCtrl() {
+    function AlbumCtrl(Fixtures) {
          this.albumData = {
               title: 'The Colors',
               artist: 'Pablo Picasso',
@@ -19,5 +19,5 @@
 
      angular
          .module('blocJams')
-         .controller('AlbumCtrl', AlbumCtrl);
+         .controller('AlbumCtrl', ['Fixtures', AlbumCtrl]);
  })();
