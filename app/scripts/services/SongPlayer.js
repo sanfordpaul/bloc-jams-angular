@@ -55,6 +55,10 @@
             song.playing = true;
         };
 
+        var stopSong = function(song){
+            currentBuzzObject.stop();
+            song.playing = null;
+        }
         /**
         * @function getSongIndex
         * @desc private method that returns the index of a song object
@@ -63,6 +67,7 @@
         var getSongIndex = function(song) {
             return currentAlbum.songs.indexOf(song);
         };
+
 
         /**
         * @desc The current song object that is passed in through the public methods
@@ -110,8 +115,20 @@
             currentSongIndex--;
 
             if (currentSongIndex < 0) {
-                currentBuzzObject.stop();
-                SongPlayer.currentSong.playing = null;
+                stopSong(currentSong);
+            } else {
+                var song = currentAlbum.songs[currentSongIndex];
+                setSong(song);
+                playSong(song);
+            }
+        };
+
+        SongPlayer.next = function() {
+            var currentSongIndex = getSongIndex(SongPlayer.currentSong);
+            currentSongIndex++;
+
+            if (currentSongIndex >= currentAlbum.songs.length) {
+                stopSong(currentSong);
             } else {
                 var song = currentAlbum.songs[currentSongIndex];
                 setSong(song);
