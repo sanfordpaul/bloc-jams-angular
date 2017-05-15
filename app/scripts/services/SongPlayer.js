@@ -5,7 +5,7 @@
     * @param {Object} song
     * @returns {Object}
     */
-    function SongPlayer(Fixtures) {
+    function SongPlayer($rootScope, Fixtures) {
         /**
         * @desc The songPlayer object that gets returned by this function
         * @type {Object}
@@ -43,7 +43,14 @@
                preload: true
            });
 
+           currentBuzzObject.bind('timeupdate', function() {
+               $rootScope.$apply(function() {
+                   SongPlayer.currentTime = currentBuzzObject.getTime();
+               });
+           })
+
            SongPlayer.currentSong = song;
+
         };
         /**
         * @function playSong
@@ -73,8 +80,13 @@
         * @desc The current song object that is passed in through the public methods
         * @type {Object}
         */
-
         SongPlayer.currentSong = null;
+
+        /**
+        * @desc Current playback time (in seconds) of currently playing song
+        * @type {Number}
+        */
+        SongPlayer.currentTime = null;
 
         /**
         * @function SongPlayer.play
@@ -135,6 +147,17 @@
                 playSong(song);
             }
         };
+
+        /**
+        * @function setCurrentTime
+        * @desc Set current time (in seconds) of currently playing song
+        * @param {Number} time
+        */
+        SongPlayer.setCurrentTime = function(time) {
+            if (currentBuzzObject) {
+                currentBuzzObject.setTime(time);
+            }
+        };
             return SongPlayer;
         }
 
@@ -142,5 +165,5 @@
 
      angular
          .module('blocJams')
-         .factory('SongPlayer', [ 'Fixtures', SongPlayer]);
+         .factory('SongPlayer', ['$rootScope', 'Fixtures', SongPlayer]);
  })();
