@@ -19,12 +19,13 @@
 
         var currentAlbum = Fixtures.getAlbum();
 
-        /**
-         * @desc Buzz object audio file
-         * @type {Object}
-         */
 
         var currentBuzzObject = null;
+
+
+        const startVolume = 75;
+
+        SongPlayer.previousVolume = 75;
 
         /**
         * @function setSong
@@ -42,6 +43,9 @@
                formats: ['mp3'],
                preload: true
            });
+           currentBuzzObject.bind('ended', function() {
+               SongPlayer.next();
+           })
 
            currentBuzzObject.bind('timeupdate', function() {
                $rootScope.$apply(function() {
@@ -52,6 +56,9 @@
            SongPlayer.currentSong = song;
 
         };
+
+
+
         /**
         * @function playSong
         * @desc plays the audio file as currentBuzzObject
@@ -140,7 +147,7 @@
             currentSongIndex++;
 
             if (currentSongIndex >= currentAlbum.songs.length) {
-                stopSong(currentSong);
+                stopSong(SongPlayer.currentSong);
             } else {
                 var song = currentAlbum.songs[currentSongIndex];
                 setSong(song);
@@ -160,10 +167,22 @@
         };
         SongPlayer.setVolume = function(volume) {
             if (currentBuzzObject) {
-                currentBuzzObject.setVolume(volume)
+                SongPlayer.previousVolume = currentBuzzObject.getVolume();
+                SongPlayer.volume = volume;
+                currentBuzzObject.setVolume(volume);
+
             }
         };
-            return SongPlayer;
+
+        SongPlayer.init = function(){
+            setSong(currentAlbum.songs[0]);
+            SongPlayer.setVolume(startVolume);
+
+        }
+
+
+        SongPlayer.init();
+        return SongPlayer;
         }
 
 
